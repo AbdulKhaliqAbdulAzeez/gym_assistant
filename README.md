@@ -3,11 +3,25 @@
 > Your personal AI fitness coach powered by OpenAI GPT-4o and Embeddings API
 
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
-[![Tests](https://img.shields.io/badge/tests-161%20passing-brightgreen.svg)](tests/)
-[![Coverage](https://img.shields.io/badge/coverage-88%25-green.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-193%20passing-brightgreen.svg)](tests/)
+[![Coverage](https://img.shields.io/badge/coverage-83%25-green.svg)](htmlcov/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-An intelligent gym assistant that generates personalized workout plans, meal plans, and provides exercise recommendations using advanced AI and semantic search.
+A fully-featured CLI application that generates personalized workout plans, meal plans, and provides exercise recommendations using OpenAI's GPT-4o and text-embedding-3-large models. Built with Test-Driven Development (TDD) principles and enterprise-grade logging.
+
+---
+
+## 🎉 Project Status
+
+**✅ MVP COMPLETE + ALL POST-MVP ENHANCEMENTS (Items 1-8)**
+
+This is a **production-ready** CLI application with:
+- 193 passing tests (83% code coverage)
+- Enterprise-grade logging and error handling
+- Persistent user profiles and history
+- Comprehensive configuration management
+- Full OpenAI GPT-4o and Embeddings API integration
+- Professional documentation and implementation guides
 
 ---
 
@@ -39,7 +53,16 @@ An intelligent gym assistant that generates personalized workout plans, meal pla
 - Set and update fitness goals
 - Manage equipment inventory
 - Track injuries and limitations
+- Persistent storage with JSON-based user profiles
+- Workout and meal plan history tracking
 - Cancel profile setup at any prompt by typing `back`
+
+### 📊 **Advanced Features**
+- Configurable logging with rotation and multiple destinations
+- Comprehensive error handling with detailed feedback
+- Environment-based configuration management
+- Persistent storage with configurable history limits
+- 193 passing tests with 83% code coverage
 
 ---
 
@@ -54,42 +77,61 @@ An intelligent gym assistant that generates personalized workout plans, meal pla
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/AbdulKhaliqAbdulAzeez/gym_assistant.git
 cd gym_assistant
 
-# Create virtual environment
-python -m venv venv
+# Create virtual environment (recommended)
+python3.12 -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 
 # Set up environment variables
-cp .env.example .env
-# Edit .env and add your OpenAI API key
+echo "OPENAI_API_KEY=your-api-key-here" > .env
+# Or copy the example file if it exists
+# cp .env.example .env
+# Then edit .env and add your OpenAI API key
 ```
+
+**Dependencies (from requirements.txt):**
+- openai>=1.3.0 - OpenAI API client
+- python-dotenv>=1.0.0 - Environment variable management
+- pytest>=7.4.0 - Testing framework
+- pytest-cov>=4.1.0 - Test coverage
+- pytest-mock>=3.11.0 - Mocking for tests
+- numpy>=1.24.0 - Vector operations
 
 ### Configuration
 
-Create a `.env` file in the project root:
+Create a `.env` file in the project root with your OpenAI API key:
 
 ```env
+# Required
 OPENAI_API_KEY=your-api-key-here
-LOG_LEVEL=INFO
-```
 
-Optional logging controls (set as needed):
+# Optional - OpenAI Settings
+OPENAI_DEFAULT_MODEL=gpt-4o
+OPENAI_EMBEDDING_MODEL=text-embedding-3-large
 
-```env
-# Disable all application logging
-GYM_ASSISTANT_DISABLE_LOGGING=true
-
-# Or fine-tune destinations
-GYM_ASSISTANT_LOG_CONSOLE=false
-GYM_ASSISTANT_LOG_FILE=false
-GYM_ASSISTANT_LOG_LEVEL=DEBUG
+# Optional - Logging Settings
+GYM_ASSISTANT_DISABLE_LOGGING=false
+GYM_ASSISTANT_LOG_CONSOLE=true
+GYM_ASSISTANT_LOG_FILE=true
+GYM_ASSISTANT_LOG_LEVEL=INFO
 GYM_ASSISTANT_LOG_DIR=./logs
+
+# Optional - Storage Settings
+GYM_ASSISTANT_STORAGE_DIR=./data
+GYM_ASSISTANT_STORAGE_ENABLED=true
+GYM_ASSISTANT_HISTORY_LIMIT=50
+
+# Optional - Parser Settings
+GYM_ASSISTANT_PARSER_MAX_RETRIES=3
+GYM_ASSISTANT_DEFAULT_DIFFICULTY=moderate
 ```
+
+All configuration options can be set via environment variables or will use sensible defaults.
 
 ### Running the Application
 
@@ -222,30 +264,44 @@ MEALS
 gym_assistant/
 ├── src/
 │   ├── __init__.py
-│   ├── models.py              # Data models (dataclasses)
-│   ├── client.py              # OpenAI API client wrapper
-│   ├── parser.py              # Parse AI responses
-│   ├── workout_service.py     # Workout generation service
-│   ├── embedding_service.py   # Vector similarity search
-│   ├── nutrition_service.py   # Meal planning service
-│   ├── main.py                # CLI interface
-│   └── logging_config.py      # Logging configuration
+│   ├── models.py              # Data models (dataclasses) - 88 stmts, 100% coverage
+│   ├── client.py              # OpenAI API client wrapper - 54 stmts, 93% coverage
+│   ├── parser.py              # Parse AI responses - 178 stmts, 88% coverage
+│   ├── workout_service.py     # Workout generation service - 44 stmts, 89% coverage
+│   ├── nutrition_service.py   # Meal planning service - 77 stmts, 94% coverage
+│   ├── embedding_service.py   # Vector similarity search - 97 stmts, 90% coverage
+│   ├── storage.py             # User profile & history storage - 93 stmts, 94% coverage
+│   ├── config.py              # Configuration management - 66 stmts, 97% coverage
+│   ├── defaults.py            # Default constants - 17 stmts, 100% coverage
+│   ├── main.py                # CLI interface - 485 stmts, 72% coverage
+│   └── logging_config.py      # Enterprise logging - 33 stmts, 24% coverage
 │
 ├── tests/
-│   ├── test_models.py         # 13 tests
-│   ├── test_client.py         # 14 tests
-│   ├── test_parser.py         # 23 tests
-│   ├── test_workout_service.py    # 21 tests
-│   ├── test_embedding_service.py  # 29 tests
-│   ├── test_nutrition_service.py  # 28 tests
-│   └── test_main.py           # 30 tests
+│   ├── conftest.py            # Shared test fixtures
+│   ├── test_models.py         # Model tests
+│   ├── test_client.py         # API client tests
+│   ├── test_parser.py         # Parser tests
+│   ├── test_workout_service.py
+│   ├── test_nutrition_service.py
+│   ├── test_embedding_service.py
+│   ├── test_storage.py        # Storage layer tests
+│   ├── test_config.py         # Configuration tests
+│   ├── test_main.py           # CLI integration tests
+│   └── test_integration_end_to_end.py  # Full E2E tests
 │
-├── logs/                       # Application logs
-├── docs/                       # Additional documentation
+├── data/                       # User profiles & history (gitignored)
+├── logs/                       # Application logs (gitignored)
+├── htmlcov/                    # Coverage reports
+├── docs/                       # Project documentation
+│   ├── DAY_8_SUMMARY.md
+│   ├── POST_MVP_ITEMS_6_7_SUMMARY.md
+│   ├── POST_MVP_ITEM_8_SUMMARY.md
+│   └── WEB_INTERFACE_IMPLEMENTATION_GUIDE.md
 ├── requirements.txt
 ├── pytest.ini
+├── BUILD_PROGRESS.md           # Development progress tracking
+├── GYM_ASSISTANT_HANDOFF.md    # Project handoff document
 ├── .env                        # Environment variables (gitignored)
-├── .env.example                # Template
 └── README.md
 ```
 
@@ -285,9 +341,11 @@ gym_assistant/
 
 - **OpenAI GPT-4o**: Text generation for workouts and meal plans
 - **OpenAI text-embedding-3-large**: Vector embeddings for exercise similarity
-- **Python 3.12+**: Core language with type hints
-- **pytest**: Testing framework with 158 tests
-- **numpy**: Vector operations for cosine similarity
+- **Python 3.12+**: Core language with type hints and dataclasses
+- **pytest**: Testing framework with 193 tests and pytest-cov for coverage
+- **numpy**: Vector operations for cosine similarity calculations
+- **python-dotenv**: Environment variable management
+- **JSON**: User data persistence and configuration storage
 
 ---
 
@@ -311,24 +369,31 @@ pytest -v
 
 ### Test Coverage
 
-Current coverage: **88%** (835 statements, 104 missing)
+Current coverage: **83%** (1,232 statements, 215 missing)
 
-| Module | Statements | Coverage |
-|--------|-----------|----------|
-| models.py | 88 | 100% |
-| nutrition_service.py | 77 | 94% |
-| client.py | 48 | 92% |
-| embedding_service.py | 97 | 90% |
-| workout_service.py | 44 | 89% |
-| parser.py | 180 | 88% |
-| main.py | 301 | 81% |
+| Module               | Statements | Missing | Coverage |
+| -------------------- | ---------- | ------- | -------- |
+| models.py            | 88         | 0       | 100%     |
+| defaults.py          | 17         | 0       | 100%     |
+| config.py            | 66         | 2       | 97%      |
+| nutrition_service.py | 77         | 5       | 94%      |
+| storage.py           | 93         | 6       | 94%      |
+| client.py            | 54         | 4       | 93%      |
+| embedding_service.py | 97         | 10      | 90%      |
+| workout_service.py   | 44         | 5       | 89%      |
+| parser.py            | 178        | 22      | 88%      |
+| main.py              | 485        | 136     | 72%      |
+| logging_config.py    | 33         | 25      | 24%      |
 
 ### Test Organization
 
 - **Unit Tests**: Each module has comprehensive unit tests with mocking
-- **Integration Tests**: End-to-end workflow testing in test_main.py
+- **Integration Tests**: End-to-end workflow testing covering full user journeys
+- **Configuration Tests**: Comprehensive testing of environment variable handling
+- **Storage Tests**: User profile and history persistence validation
 - **TDD Approach**: All code written test-first following Red-Green-Refactor
-- **158 Total Tests**: 100% passing, no skipped tests
+- **193 Total Tests**: 100% passing, no skipped tests
+- **No External API Calls**: All OpenAI API interactions are mocked in tests
 
 ---
 
@@ -381,12 +446,12 @@ The application makes the following API calls:
 
 ### Cost Estimates (as of Oct 2025)
 
-| Operation | Cost per Request | Typical Usage |
-|-----------|-----------------|---------------|
-| Generate Workout | ~$0.01-0.02 | Once per session |
-| Generate Meal Plan | ~$0.02-0.03 | Once per session |
-| Find Similar Exercises | ~$0.001 | Multiple times |
-| Build Exercise Database | ~$0.05-0.10 | One-time setup |
+| Operation               | Cost per Request | Typical Usage    |
+| ----------------------- | ---------------- | ---------------- |
+| Generate Workout        | ~$0.01-0.02      | Once per session |
+| Generate Meal Plan      | ~$0.02-0.03      | Once per session |
+| Find Similar Exercises  | ~$0.001          | Multiple times   |
+| Build Exercise Database | ~$0.05-0.10      | One-time setup   |
 
 **Note**: Actual costs depend on GPT-4o pricing. Check [OpenAI Pricing](https://openai.com/pricing) for current rates.
 
@@ -447,22 +512,77 @@ For questions, suggestions, or issues:
 
 ---
 
-## 🗺️ Roadmap
+## 📚 Documentation
 
-### Potential Future Enhancements
+This project includes comprehensive documentation:
 
-- [ ] Web interface (Flask/FastAPI)
-- [ ] Progress tracking and workout history
+- **[BUILD_PROGRESS.md](BUILD_PROGRESS.md)** - Day-by-day development progress and implementation details
+- **[GYM_ASSISTANT_HANDOFF.md](GYM_ASSISTANT_HANDOFF.md)** - Project handoff document with architecture and design decisions
+- **[Web Interface Guide](docs/WEB_INTERFACE_IMPLEMENTATION_GUIDE.md)** - Step-by-step guide to build a web interface for this project
+- **[Day 8 Summary](docs/DAY_8_SUMMARY.md)** - Polish and documentation phase completion
+- **[Post-MVP Items 6-7](docs/POST_MVP_ITEMS_6_7_SUMMARY.md)** - Storage and configuration enhancements
+- **[Post-MVP Item 8](docs/POST_MVP_ITEM_8_SUMMARY.md)** - Additional feature implementations
+
+## ️ Development Journey
+
+This project was built using **Test-Driven Development (TDD)** methodology over an 8-day development cycle:
+
+- **Day 1**: Models Layer - Core data structures
+- **Day 2**: Client Layer - OpenAI API integration
+- **Day 3**: Parser Layer - Response parsing and validation
+- **Day 4**: Workout Service - Exercise and workout generation
+- **Day 5**: Embedding Service - Semantic search functionality
+- **Day 6**: Nutrition Service - Meal planning and BMR/TDEE calculations
+- **Day 7**: CLI Interface - User interaction and main menu
+- **Day 8**: Polish - Logging, error handling, and documentation
+
+**Post-MVP Enhancements:**
+- ✅ Configuration management system with environment variables
+- ✅ Persistent storage layer with JSON-based user profiles
+- ✅ Workout and meal plan history tracking
+- ✅ Enterprise-grade logging with rotation and multiple destinations
+- ✅ Comprehensive error handling and user feedback
+- ✅ Web interface implementation guide
+
+## 🔮 Future Enhancements
+
+### Potential Next Steps
+
+- [ ] Web interface implementation (see [Web Interface Guide](docs/WEB_INTERFACE_IMPLEMENTATION_GUIDE.md))
+- [ ] RESTful API with Flask or FastAPI
+- [ ] Database integration (PostgreSQL/SQLite)
+- [ ] User authentication and authorization
+- [ ] Progress tracking dashboard with charts
 - [ ] Exercise demonstration videos (YouTube integration)
 - [ ] Social features (share workouts with friends)
 - [ ] Mobile app (React Native)
 - [ ] Wearable device integration (Apple Watch, Fitbit)
-- [ ] Advanced analytics and insights
-- [ ] Meal prep shopping lists
+- [ ] Advanced analytics and AI-powered insights
+- [ ] Meal prep shopping lists with grocery store integration
 - [ ] Recipe database with user submissions
+- [ ] Multi-language support
+
+---
+
+## 🎓 Educational Value
+
+This project demonstrates:
+
+- ✅ **Test-Driven Development (TDD)** - 193 tests written before implementation
+- ✅ **Clean Architecture** - Separation of concerns with distinct layers
+- ✅ **SOLID Principles** - Single responsibility, dependency injection
+- ✅ **Enterprise Patterns** - Logging, configuration management, error handling
+- ✅ **API Integration** - OpenAI GPT-4o and Embeddings API
+- ✅ **Type Safety** - Full type hints throughout the codebase
+- ✅ **Defensive Programming** - Input validation and error handling
+- ✅ **Documentation** - Comprehensive README and inline documentation
+
+Perfect for IS218 students learning professional software development practices!
 
 ---
 
 **Built with ❤️ using AI and Test-Driven Development**
 
-**Last Updated**: January 14, 2025
+**Last Updated**: October 16, 2025  
+**Course**: IS218 - Advanced Python Programming  
+**Status**: ✅ MVP Complete + All Post-MVP Enhancements (Items 1-8)
